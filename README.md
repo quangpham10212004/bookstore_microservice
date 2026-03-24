@@ -131,7 +131,7 @@ See [docs/ASSIGNMENT_06_REPORT.md](docs/ASSIGNMENT_06_REPORT.md) for JWT, Saga, 
 
 ## Frontend Applications
 
-### Customer Web App (port 3000)
+### Customer Web App (Vite dev: port 3000, Docker: port 3002)
 
 Main customer-facing application built with React + Vite.
 
@@ -224,7 +224,7 @@ This will create:
    ```
 
 5. **Access applications**
-   - Frontend: http://localhost:3000
+  - Frontend: http://localhost:3002
    - Admin Dashboard: http://localhost:3001
    - API Gateway: http://localhost:8000
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
@@ -18,8 +18,13 @@ export default function LoginPage() {
 
   const from = location.state?.from?.pathname || "/";
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [from, isAuthenticated, navigate]);
+
   if (isAuthenticated) {
-    navigate(from, { replace: true });
     return null;
   }
 
@@ -42,7 +47,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg ring-1 ring-slate-100 border-t-4 border-accent-600 p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800">Đăng nhập</h1>
             <p className="text-gray-500 mt-2">Chào mừng bạn quay trở lại!</p>
@@ -102,13 +107,13 @@ export default function LoginPage() {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="rounded border-gray-300 text-primary-600 mr-2"
+                  className="rounded border-gray-300 text-accent-600 mr-2"
                 />
                 <span className="text-sm text-gray-600">Ghi nhớ đăng nhập</span>
               </label>
               <a
                 href="#"
-                className="text-sm text-primary-600 hover:text-primary-700"
+                className="text-sm text-accent-700 hover:text-accent-800"
               >
                 Quên mật khẩu?
               </a>
@@ -127,7 +132,7 @@ export default function LoginPage() {
             Chưa có tài khoản?{" "}
             <Link
               to="/register"
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-primary-700 hover:text-primary-800 font-medium"
             >
               Đăng ký ngay
             </Link>

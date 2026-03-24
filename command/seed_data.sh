@@ -15,7 +15,7 @@ seed_service() {
     local command=$2
     echo ""
     echo ">>> Seeding $service..."
-    docker-compose exec -T $service python manage.py $command
+    docker compose exec -T $service python manage.py $command
     echo ">>> $service seeded successfully!"
 }
 

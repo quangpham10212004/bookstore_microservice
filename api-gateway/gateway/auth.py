@@ -12,6 +12,16 @@ PUBLIC_ROUTES = {
     ("customers", "login"),
 }
 
+# Customer-facing services in this project currently identify the active
+# customer via request data / X-Customer-ID rather than JWT bearer tokens.
+# Keep JWT enforcement only for the management flows that have RBAC rules.
+JWT_PROTECTED_SERVICES = {
+    "staff",
+    "managers",
+    "books",
+    "catalogs",
+}
+
 WRITE_ROLE_RULES = {
     "staff": {"manager"},
     "managers": {"manager"},
@@ -64,3 +74,11 @@ def is_authorized(service_name: str, method: str, role: str) -> bool:
     if not allowed_roles:
         return True
     return role in allowed_roles
+
+
+def requires_bearer_auth(service_name: str, path: str, method: str) -> bool:
+    if method.upper() in {"GET", "HEAD", "OPTIONS"}:
+        return False
+    return service_name in JWT_PROTECTED_SERVICES and not is_public_route(
+        service_name, path, method
+    )

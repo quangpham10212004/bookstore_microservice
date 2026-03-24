@@ -56,26 +56,26 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Banner */}
-      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+      <section className="bg-gradient-to-r from-primary-700 via-primary-600 to-accent-700 text-white">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Khám phá thế giới sách
             </h1>
-            <p className="text-lg md:text-xl text-primary-100 mb-8">
+            <p className="text-lg md:text-xl text-white/85 mb-8">
               Hàng nghìn đầu sách hay đang chờ bạn. Mua sách online dễ dàng,
               giao hàng nhanh chóng trên toàn quốc.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/books"
-                className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors"
+                className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors shadow-sm"
               >
                 Mua sách ngay
               </Link>
               <Link
                 to="/books?sort=bestseller"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors"
+                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-accent-700 transition-colors"
               >
                 Sách bán chạy
               </Link>
@@ -90,8 +90,8 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-6 h-6 text-primary-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-6 h-6 text-accent-700" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-800 text-sm">
@@ -126,9 +126,9 @@ export default function HomePage() {
                 <Link
                   key={catalog.id}
                   to={`/books?catalog=${catalog.id}`}
-                  className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+                  className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow border border-slate-100"
                 >
-                  <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <span className="text-3xl">{catalog.icon || "📚"}</span>
                   </div>
                   <h3 className="font-medium text-gray-800">{catalog.name}</h3>
@@ -165,12 +165,12 @@ export default function HomePage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="py-16 bg-primary-600">
+      <section className="py-16 bg-gradient-to-r from-accent-700 to-primary-700">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Đăng ký nhận tin khuyến mãi
           </h2>
-          <p className="text-primary-100 mb-8 max-w-xl mx-auto">
+          <p className="text-white/85 mb-8 max-w-xl mx-auto">
             Nhận thông tin về sách mới và ưu đãi hấp dẫn trực tiếp vào email của
             bạn
           </p>
@@ -178,7 +178,7 @@ export default function HomePage() {
             <input
               type="email"
               placeholder="Email của bạn"
-              className="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300"
+              className="flex-grow px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-300"
             />
             <button
               type="submit"

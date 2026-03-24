@@ -76,7 +76,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg ring-1 ring-slate-100 border-t-4 border-primary-500 p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800">Đăng ký</h1>
             <p className="text-gray-500 mt-2">Tạo tài khoản mới</p>
@@ -237,7 +237,7 @@ export default function RegisterPage() {
             Đã có tài khoản?{" "}
             <Link
               to="/login"
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-accent-700 hover:text-accent-800 font-medium"
             >
               Đăng nhập
             </Link>

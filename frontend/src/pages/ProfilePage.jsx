@@ -84,11 +84,11 @@ export default function ProfilePage() {
           Thông tin tài khoản
         </h1>
 
-        <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6 md:p-8">
           {/* Avatar */}
           <div className="flex items-center gap-4 mb-8 pb-8 border-b">
-            <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center">
-              <span className="text-3xl text-primary-600 font-bold">
+            <div className="w-20 h-20 bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center">
+              <span className="text-3xl text-primary-700 font-bold">
                 {formData.first_name?.[0] || "U"}
               </span>
             </div>

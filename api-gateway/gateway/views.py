@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .auth import is_authorized, is_public_route, validate_bearer_token
+from .auth import is_authorized, requires_bearer_auth, validate_bearer_token
 from .metrics import inc, snapshot
 
 # Service registry
@@ -50,7 +50,7 @@ class GatewayProxyView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if not is_public_route(service_name, path, request.method):
+        if requires_bearer_auth(service_name, path, request.method):
             claims, error = validate_bearer_token(request.headers.get("Authorization", ""))
             if error:
                 inc("auth_rejected_total")

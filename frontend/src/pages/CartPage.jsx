@@ -62,7 +62,7 @@ export default function CartPage() {
           {cart.items.map((item) => (
             <div
               key={item.book_id}
-              className="bg-white rounded-xl p-4 shadow-sm flex gap-4"
+              className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-slate-100 flex gap-4"
             >
               <Link
                 to={`/books/${item.book_id}`}
@@ -75,7 +75,7 @@ export default function CartPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
                     <span className="text-3xl">📚</span>
                   </div>
                 )}
@@ -84,7 +84,7 @@ export default function CartPage() {
               <div className="flex-grow">
                 <Link
                   to={`/books/${item.book_id}`}
-                  className="font-semibold text-gray-800 hover:text-primary-600 line-clamp-2"
+                  className="font-semibold text-gray-800 hover:text-accent-700 line-clamp-2"
                 >
                   {item.book?.title || `Sách #${item.book_id}`}
                 </Link>
@@ -113,7 +113,7 @@ export default function CartPage() {
                     </button>
                   </div>
 
-                  <span className="font-bold text-primary-600">
+                  <span className="font-bold text-primary-700">
                     {item.book && formatPrice(item.book.price * item.quantity)}
                   </span>
                 </div>
@@ -131,7 +131,7 @@ export default function CartPage() {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
+          <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-slate-100 sticky top-24">
             <h2 className="font-semibold text-gray-800 text-lg mb-4">
               Tóm tắt đơn hàng
             </h2>
@@ -149,7 +149,7 @@ export default function CartPage() {
 
             <div className="flex justify-between text-lg font-bold text-gray-800 mb-6">
               <span>Tổng cộng</span>
-              <span className="text-primary-600">
+              <span className="text-primary-700">
                 {formatPrice(cart.total)}
               </span>
             </div>
@@ -163,7 +163,7 @@ export default function CartPage() {
 
             <Link
               to="/books"
-              className="block text-center text-primary-600 hover:text-primary-700 mt-4"
+              className="block text-center text-accent-700 hover:text-accent-800 mt-4"
             >
               Tiếp tục mua sắm
             </Link>

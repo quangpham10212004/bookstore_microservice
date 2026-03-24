@@ -91,16 +91,16 @@ export default function BooksPage() {
           </select>
 
           {/* View Mode */}
-          <div className="flex border rounded-lg overflow-hidden">
+          <div className="flex border border-slate-200 rounded-lg overflow-hidden shadow-sm">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 ${viewMode === "grid" ? "bg-primary-600 text-white" : "bg-white text-gray-600"}`}
+              className={`p-2 ${viewMode === "grid" ? "bg-primary-600 text-white" : "bg-white text-gray-600 hover:text-accent-700"}`}
             >
               <FiGrid className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 ${viewMode === "list" ? "bg-primary-600 text-white" : "bg-white text-gray-600"}`}
+              className={`p-2 ${viewMode === "list" ? "bg-primary-600 text-white" : "bg-white text-gray-600 hover:text-accent-700"}`}
             >
               <FiList className="w-5 h-5" />
             </button>
@@ -109,7 +109,7 @@ export default function BooksPage() {
           {/* Mobile Filter Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="md:hidden p-2 border rounded-lg"
+            className="md:hidden p-2 border border-slate-200 rounded-lg text-accent-700"
           >
             <FiFilter className="w-5 h-5" />
           </button>
@@ -121,7 +121,7 @@ export default function BooksPage() {
         <aside
           className={`w-64 flex-shrink-0 ${showFilters ? "block" : "hidden"} md:block`}
         >
-          <div className="bg-white rounded-xl p-6 shadow-sm">
+          <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-slate-100">
             <h3 className="font-semibold text-gray-800 mb-4">Danh mục</h3>
             <ul className="space-y-2">
               <li>
@@ -130,7 +130,7 @@ export default function BooksPage() {
                   className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                     !catalogId
                       ? "bg-primary-100 text-primary-700 font-medium"
-                      : "hover:bg-gray-100"
+                      : "hover:bg-accent-50 hover:text-accent-700"
                   }`}
                 >
                   Tất cả
@@ -143,7 +143,7 @@ export default function BooksPage() {
                     className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                       catalogId == catalog.id
                         ? "bg-primary-100 text-primary-700 font-medium"
-                        : "hover:bg-gray-100"
+                        : "hover:bg-accent-50 hover:text-accent-700"
                     }`}
                   >
                     {catalog.name}
@@ -193,7 +193,7 @@ function BookListItem({ book }) {
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm flex gap-4">
+    <div className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-slate-100 flex gap-4">
       <div className="w-32 h-40 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
         {book.image_url ? (
           <img
@@ -202,7 +202,7 @@ function BookListItem({ book }) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
             <span className="text-4xl">📚</span>
           </div>
         )}
@@ -214,7 +214,7 @@ function BookListItem({ book }) {
           {book.description}
         </p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-primary-600">
+          <span className="text-xl font-bold text-primary-700">
             {formatPrice(book.price)}
           </span>
           <button

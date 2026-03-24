@@ -33,12 +33,12 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-sm shadow-md sticky top-0 z-50 border-b-2 border-primary-100">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-accent-700 rounded-lg flex items-center justify-center shadow-sm">
               <span className="text-white font-bold text-xl">B</span>
             </div>
             <span className="text-xl font-bold text-gray-800 hidden sm:block">
@@ -57,11 +57,11 @@ export default function Header() {
                 placeholder="Tìm kiếm sách..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-12 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+                className="w-full pl-4 pr-12 py-2 border border-slate-200 rounded-full focus:ring-2 focus:ring-accent-400 focus:border-accent-500 outline-none"
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-primary-600"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-accent-600"
               >
                 <FiSearch className="w-5 h-5" />
               </button>
@@ -79,7 +79,7 @@ export default function Header() {
 
             <Link
               to="/cart"
-              className="relative p-2 text-gray-600 hover:text-primary-600"
+              className="relative p-2 text-gray-600 hover:text-accent-600"
             >
               <FiShoppingCart className="w-6 h-6" />
               {itemCount > 0 && (
@@ -91,7 +91,7 @@ export default function Header() {
 
             {isAuthenticated ? (
               <div className="relative group">
-                <button className="flex items-center space-x-2 p-2 text-gray-600 hover:text-primary-600">
+                <button className="flex items-center space-x-2 p-2 text-gray-600 hover:text-accent-600">
                   <FiUser className="w-6 h-6" />
                   <span className="font-medium">
                     {customer?.first_name || "User"}
@@ -146,7 +146,7 @@ export default function Header() {
               placeholder="Tìm kiếm sách..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-4 pr-12 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary-500 outline-none"
+                className="w-full pl-4 pr-12 py-2 border border-slate-200 rounded-full focus:ring-2 focus:ring-accent-400 outline-none"
             />
             <button
               type="submit"
@@ -207,7 +207,7 @@ export default function Header() {
             ) : (
               <Link
                 to="/login"
-                className="block text-primary-600 font-medium"
+                className="block text-accent-700 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Đăng nhập

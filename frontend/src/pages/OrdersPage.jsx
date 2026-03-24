@@ -85,9 +85,9 @@ export default function OrdersPage() {
   const getStatusColor = (status) => {
     const colors = {
       pending: "bg-yellow-100 text-yellow-700",
-      confirmed: "bg-blue-100 text-blue-700",
+      confirmed: "bg-accent-100 text-accent-700",
       paid: "bg-green-100 text-green-700",
-      shipped: "bg-purple-100 text-purple-700",
+      shipped: "bg-primary-100 text-primary-700",
       delivered: "bg-green-100 text-green-700",
       cancelled: "bg-red-100 text-red-700",
     };
@@ -133,7 +133,7 @@ export default function OrdersPage() {
 
       <div className="space-y-4">
         {orders.map((order) => (
-          <div key={order.id} className="bg-white rounded-xl shadow-sm p-6">
+          <div key={order.id} className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6">
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
               <div>
                 <p className="text-gray-500 text-sm">Mã đơn hàng</p>
@@ -145,7 +145,7 @@ export default function OrdersPage() {
               </div>
               <div>
                 <p className="text-gray-500 text-sm">Tổng tiền</p>
-                <p className="font-bold text-primary-600">
+                <p className="font-bold text-primary-700">
                   {formatPrice(order.total_amount)}
                 </p>
               </div>

@@ -121,11 +121,11 @@ export default function BookDetailPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-6">
-        <Link to="/" className="hover:text-primary-600">
+        <Link to="/" className="hover:text-accent-700">
           Trang chủ
         </Link>
         <span className="mx-2">/</span>
-        <Link to="/books" className="hover:text-primary-600">
+        <Link to="/books" className="hover:text-accent-700">
           Sách
         </Link>
         {catalog && (
@@ -133,7 +133,7 @@ export default function BookDetailPage() {
             <span className="mx-2">/</span>
             <Link
               to={`/books?catalog=${catalog.id}`}
-              className="hover:text-primary-600"
+              className="hover:text-accent-700"
             >
               {catalog.name}
             </Link>
@@ -144,7 +144,7 @@ export default function BookDetailPage() {
       </nav>
 
       {/* Product Info */}
-      <div className="bg-white rounded-xl shadow-sm p-6 md:p-8">
+      <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6 md:p-8">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Image */}
           <div className="aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden">
@@ -155,7 +155,7 @@ export default function BookDetailPage() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
                 <span className="text-9xl">📚</span>
               </div>
             )}
@@ -185,7 +185,7 @@ export default function BookDetailPage() {
 
             {/* Price */}
             <div className="mb-6">
-              <span className="text-4xl font-bold text-primary-600">
+              <span className="text-4xl font-bold text-primary-700">
                 {formatPrice(book.price)}
               </span>
             </div>
@@ -267,7 +267,7 @@ export default function BookDetailPage() {
             onClick={() => setActiveTab("description")}
             className={`px-6 py-3 font-medium transition-colors ${
               activeTab === "description"
-                ? "text-primary-600 border-b-2 border-primary-600"
+                ? "text-primary-700 border-b-2 border-primary-600"
                 : "text-gray-500 hover:text-gray-800"
             }`}
           >
@@ -277,7 +277,7 @@ export default function BookDetailPage() {
             onClick={() => setActiveTab("reviews")}
             className={`px-6 py-3 font-medium transition-colors ${
               activeTab === "reviews"
-                ? "text-primary-600 border-b-2 border-primary-600"
+                ? "text-primary-700 border-b-2 border-primary-600"
                 : "text-gray-500 hover:text-gray-800"
             }`}
           >
@@ -285,7 +285,7 @@ export default function BookDetailPage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-b-xl p-6 shadow-sm">
+        <div className="bg-white rounded-b-xl p-6 shadow-sm ring-1 ring-slate-100">
           {activeTab === "description" ? (
             <div className="prose max-w-none">
               <p className="text-gray-600 whitespace-pre-line">
@@ -361,8 +361,8 @@ export default function BookDetailPage() {
                     className="border-b pb-6 last:border-b-0"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                        <span className="text-primary-600 font-medium">
+                      <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center">
+                        <span className="text-primary-700 font-medium">
                           {comment.customer_name?.[0] || "U"}
                         </span>
                       </div>

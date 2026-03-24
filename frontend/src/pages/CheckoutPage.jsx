@@ -138,14 +138,14 @@ export default function CheckoutPage() {
                 step > index + 1
                   ? "bg-green-500 text-white"
                   : step === index + 1
-                    ? "bg-primary-600 text-white"
+                    ? "bg-gradient-to-br from-primary-600 to-accent-700 text-white"
                     : "bg-gray-200 text-gray-500"
               }`}
             >
               {step > index + 1 ? <FiCheck /> : index + 1}
             </div>
             <span
-              className={`ml-2 hidden sm:block ${step === index + 1 ? "text-primary-600 font-medium" : "text-gray-500"}`}
+              className={`ml-2 hidden sm:block ${step === index + 1 ? "text-accent-700 font-medium" : "text-gray-500"}`}
             >
               {label}
             </span>
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
         <div className="lg:col-span-2">
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-xl p-6 shadow-sm"
+            className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-slate-100"
           >
             {step === 1 && (
               <div className="space-y-4">
@@ -237,8 +237,8 @@ export default function CheckoutPage() {
                         key={method.id}
                         className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${
                           formData.shipping_method === method.id
-                            ? "border-primary-500 bg-primary-50"
-                            : "border-gray-200 hover:border-gray-300"
+                            ? "border-primary-400 bg-primary-50"
+                            : "border-gray-200 hover:border-accent-300"
                         }`}
                       >
                         <div className="flex items-center">
@@ -294,8 +294,8 @@ export default function CheckoutPage() {
                       key={method.id}
                       className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
                         formData.payment_method === method.id
-                          ? "border-primary-500 bg-primary-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-accent-500 bg-accent-50"
+                          : "border-gray-200 hover:border-accent-300"
                       }`}
                     >
                       <input
@@ -405,7 +405,7 @@ export default function CheckoutPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
+          <div className="bg-white rounded-xl p-6 shadow-sm ring-1 ring-slate-100 sticky top-24">
             <h2 className="font-semibold text-gray-800 text-lg mb-4">
               Đơn hàng
             </h2>
@@ -460,7 +460,7 @@ export default function CheckoutPage() {
 
             <div className="flex justify-between text-lg font-bold text-gray-800">
               <span>Tổng cộng</span>
-              <span className="text-primary-600">
+              <span className="text-primary-700">
                 {formatPrice(totalAmount)}
               </span>
             </div>

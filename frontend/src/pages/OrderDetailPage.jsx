@@ -70,9 +70,9 @@ export default function OrderDetailPage() {
   const getStatusColor = (status) => {
     const colors = {
       pending: "bg-yellow-100 text-yellow-700",
-      confirmed: "bg-blue-100 text-blue-700",
+      confirmed: "bg-accent-100 text-accent-700",
       paid: "bg-green-100 text-green-700",
-      shipped: "bg-purple-100 text-purple-700",
+      shipped: "bg-primary-100 text-primary-700",
       delivered: "bg-green-100 text-green-700",
       cancelled: "bg-red-100 text-red-700",
     };
@@ -152,17 +152,17 @@ export default function OrderDetailPage() {
 
       {/* Order Progress */}
       {order.status !== "cancelled" && (
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6 mb-8">
           <div className="flex items-center justify-between">
             {orderSteps.map((step, index) => (
               <div key={step.status} className="flex items-center">
                 <div
-                  className={`flex flex-col items-center ${index < getCurrentStep() ? "text-primary-600" : "text-gray-400"}`}
+                  className={`flex flex-col items-center ${index < getCurrentStep() ? "text-accent-700" : "text-gray-400"}`}
                 >
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       index < getCurrentStep()
-                        ? "bg-primary-600 text-white"
+                        ? "bg-gradient-to-br from-primary-600 to-accent-700 text-white"
                         : "bg-gray-200"
                     }`}
                   >
@@ -176,7 +176,7 @@ export default function OrderDetailPage() {
                   <div
                     className={`w-12 sm:w-24 h-1 mx-2 ${
                       index < getCurrentStep() - 1
-                        ? "bg-primary-600"
+                        ? "bg-gradient-to-r from-primary-600 to-accent-600"
                         : "bg-gray-200"
                     }`}
                   />
@@ -190,7 +190,7 @@ export default function OrderDetailPage() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Order Items */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6">
             <h2 className="font-semibold text-gray-800 text-lg mb-4">
               Sản phẩm
             </h2>
@@ -212,7 +212,7 @@ export default function OrderDetailPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-primary-200">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
                         <span className="text-3xl">📚</span>
                       </div>
                     )}
@@ -221,7 +221,7 @@ export default function OrderDetailPage() {
                   <div className="flex-grow">
                     <Link
                       to={`/books/${item.book_id}`}
-                      className="font-medium text-gray-800 hover:text-primary-600"
+                      className="font-medium text-gray-800 hover:text-accent-700"
                     >
                       {item.book?.title || `Sách #${item.book_id}`}
                     </Link>
@@ -230,7 +230,7 @@ export default function OrderDetailPage() {
                       <span className="text-gray-600">
                         Số lượng: {item.quantity}
                       </span>
-                      <span className="font-medium text-primary-600">
+                      <span className="font-medium text-primary-700">
                         {formatPrice(item.price * item.quantity)}
                       </span>
                     </div>
@@ -243,7 +243,7 @@ export default function OrderDetailPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6">
             <h2 className="font-semibold text-gray-800 text-lg mb-4">
               Thông tin đơn hàng
             </h2>
@@ -274,7 +274,7 @@ export default function OrderDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm ring-1 ring-slate-100 p-6">
             <h2 className="font-semibold text-gray-800 text-lg mb-4">
               Tổng tiền
             </h2>
@@ -292,7 +292,7 @@ export default function OrderDetailPage() {
 
             <div className="flex justify-between text-lg font-bold text-gray-800">
               <span>Tổng cộng</span>
-              <span className="text-primary-600">
+              <span className="text-primary-700">
                 {formatPrice(order.total_amount)}
               </span>
             </div>
