@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #1a1a2e;
+  font-family: 'Courier New', monospace;
+  color: #c8d8e8;
+  padding: 40px 30px;
+}
+h1 { text-align:center; font-size:22px; color:#a0c4e8; margin-bottom:40px; letter-spacing:2px; }
+.page-title { text-align:center; font-size:14px; color:#6a9fc8; margin-bottom:50px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 50px 60px;
+}
+
+/* Each service card */
+.svc-card {
+  background: #252540;
+  border: 1px solid #4a6a8a;
+  border-radius: 6px;
+  padding: 20px;
+  position: relative;
+}
+.svc-title {
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  color: #a0c4e8;
+  margin-bottom: 16px;
+}
+
+/* Sections inside card */
+.section {
+  border: 1px solid #4a6a8a;
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background: #1e1e38;
+}
+.section-label {
+  font-size: 10px;
+  color: #6a9fc8;
+  margin-bottom: 8px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* Endpoints row */
+.endpoints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.ep {
+  border: 1px solid #4a6a8a;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 10.5px;
+  background: #2a2a48;
+}
+.ep.get  { border-color: #3a8a5a; color: #6acf9a; }
+.ep.post { border-color: #8a6a3a; color: #cfaa6a; }
+.ep.put  { border-color: #6a5a8a; color: #aa9acf; }
+.ep.del  { border-color: #8a3a3a; color: #cf7a7a; }
+
+/* View box */
+.view-box {
+  background: #2a2a48;
+  border: 1px solid #4a6a8a;
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 10.5px;
+  margin-bottom: 6px;
+}
+.view-name { font-weight: bold; color: #a0c4e8; margin-bottom: 4px; }
+.view-methods { color: #8ab0c8; font-size: 10px; }
+
+/* Model box */
+.model-box {
+  background: #2a2a48;
+  border: 1px solid #4a6a8a;
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 10px;
+}
+.model-name { font-weight: bold; color: #a0c4e8; margin-bottom: 6px; border-bottom: 1px solid #4a6a8a; padding-bottom: 4px; }
+.field { color: #8ab0c8; line-height: 1.7; }
+.field span { color: #6a9fc8; }
+
+/* DB cylinder */
+.db-wrap { display:flex; justify-content:center; margin-top:6px; }
+.db {
+  text-align: center;
+  font-size: 10.5px;
+  color: #8ab0c8;
+}
+.db-top {
+  width: 120px; height: 16px;
+  background: #2a2a48;
+  border: 1px solid #4a6a8a;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.db-body {
+  width: 120px;
+  background: #2a2a48;
+  border-left: 1px solid #4a6a8a;
+  border-right: 1px solid #4a6a8a;
+  padding: 6px 0;
+  margin: 0 auto;
+  font-size: 10px;
+}
+.db-bottom {
+  width: 120px; height: 16px;
+  background: #2a2a48;
+  border: 1px solid #4a6a8a;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+/* Arrow */
+.arrow { text-align:center; color:#4a6a8a; font-size:14px; margin: 4px 0; }
+
+/* External service badge */
+.ext-badge {
+  display: inline-block;
+  border: 1px dashed #6a9fc8;
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 10px;
+  color: #6a9fc8;
+  margin: 2px;
+}
+.ext-row { display:flex; flex-wrap:wrap; gap:4px; justify-content:center; margin-top:4px; }
+
+/* RabbitMQ badge */
+.mq-badge {
+  display: inline-block;
+  border: 1px dashed #cfaa6a;
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 10px;
+  color: #cfaa6a;
+  margin: 2px;
+}
+</style>
+</head>
+<body>
+<h1>KIẾN TRÚC CÁC MICROSERVICES</h1>
+<div class="page-title">BookStore Microservices — Django REST Framework · PostgreSQL · RabbitMQ</div>
+
+<div class="grid">
+
+<!-- ===== API GATEWAY ===== -->
+<div class="svc-card">
+  <div class="svc-title">API Gateway (:8000)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/{service}/{path}/</div>
+      <div class="ep post">POST /api/{service}/{path}/</div>
+      <div class="ep put">PUT /api/{service}/{path}/</div>
+      <div class="ep del">DELETE /api/{service}/{path}/</div>
+      <div class="ep get">GET /health/</div>
+      <div class="ep get">GET /metrics/</div>
+      <div class="ep get">GET /services/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS / MIDDLEWARE</div>
+    <div class="view-box">
+      <div class="view-name">GatewayProxyView</div>
+      <div class="view-methods">_proxy(service_name, path) → forward HTTP</div>
+    </div>
+    <div class="view-box">
+      <div class="view-name">auth.py — is_public_route()</div>
+      <div class="view-methods">PUBLIC_ROUTES · validate_bearer_token() · is_authorized()</div>
+    </div>
+    <div class="view-box">
+      <div class="view-name">RBAC Rules</div>
+      <div class="view-methods">staff → books, catalogs &nbsp;|&nbsp; manager → staff, managers</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">ROUTES ĐẾN CÁC SERVICE</div>
+    <div class="ext-row">
+      <span class="ext-badge">auth :8012</span>
+      <span class="ext-badge">customers :8003</span>
+      <span class="ext-badge">books :8005</span>
+      <span class="ext-badge">catalogs :8004</span>
+      <span class="ext-badge">carts :8006</span>
+      <span class="ext-badge">orders :8007</span>
+      <span class="ext-badge">payments :8009</span>
+      <span class="ext-badge">shipments :8008</span>
+      <span class="ext-badge">comments :8010</span>
+      <span class="ext-badge">recommendations :8011</span>
+      <span class="ext-badge">staff :8001</span>
+      <span class="ext-badge">managers :8002</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== AUTH SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Auth Service (:8012)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep post">POST /api/auth/login/</div>
+      <div class="ep post">POST /api/auth/validate/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">LoginView</div>
+      <div class="view-methods">POST: xác thực username/password → phát JWT token</div>
+    </div>
+    <div class="view-box">
+      <div class="view-name">ValidateTokenView</div>
+      <div class="view-methods">POST: giải mã JWT → trả về claims (user_id, role, username)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL (in-memory / file)</div>
+    <div class="model-box">
+      <div class="model-name">User Store</div>
+      <div class="field">username <span>| CharField</span></div>
+      <div class="field">password <span>| CharField</span></div>
+      <div class="field">role <span>| CharField (staff/manager/customer)</span></div>
+      <div class="field">user_id <span>| IntegerField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">JWT</div>
+    <div class="model-box" style="text-align:center">
+      <div class="field">HS256 · exp: configurable · claims: sub, role, username</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CUSTOMER SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Customer Service (:8003)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/customers/</div>
+      <div class="ep post">POST /api/customers/</div>
+      <div class="ep get">GET /api/customers/{id}/</div>
+      <div class="ep put">PUT /api/customers/{id}/</div>
+      <div class="ep post">POST /api/customers/register/</div>
+      <div class="ep post">POST /api/customers/login/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">CustomerViewSet</div>
+      <div class="view-methods">register(): tạo customer → gọi cart-service tạo cart</div>
+      <div class="view-methods">login(): xác thực bcrypt → trả customer data</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Customer</div>
+      <div class="field">id <span>| AutoField (PK)</span></div>
+      <div class="field">username <span>| CharField(150, unique)</span></div>
+      <div class="field">email <span>| EmailField(unique)</span></div>
+      <div class="field">password <span>| CharField(128, bcrypt)</span></div>
+      <div class="field">first_name, last_name <span>| CharField</span></div>
+      <div class="field">phone, address <span>| CharField / TextField</span></div>
+      <div class="field">is_active <span>| BooleanField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-customer</div>
+    <div class="db-bottom"></div>
+  </div></div>
+  <div class="ext-row" style="margin-top:10px">
+    <span style="font-size:10px;color:#6a9fc8">Gọi ra ngoài:</span>
+    <span class="ext-badge">→ Cart Service (auto-create cart)</span>
+  </div>
+</div>
+
+<!-- ===== CATALOG SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Catalog Service (:8004)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/catalogs/</div>
+      <div class="ep post">POST /api/catalogs/</div>
+      <div class="ep get">GET /api/catalogs/{id}/</div>
+      <div class="ep put">PUT /api/catalogs/{id}/</div>
+      <div class="ep del">DELETE /api/catalogs/{id}/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">CatalogViewSet</div>
+      <div class="view-methods">ModelViewSet — CRUD danh mục sách</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Catalog</div>
+      <div class="field">id <span>| AutoField (PK)</span></div>
+      <div class="field">name <span>| CharField(200, unique)</span></div>
+      <div class="field">description <span>| TextField</span></div>
+      <div class="field">icon <span>| CharField(10) — emoji</span></div>
+      <div class="field">created_at, updated_at <span>| DateTimeField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-catalog</div>
+    <div class="db-bottom"></div>
+  </div></div>
+</div>
+
+<!-- ===== BOOK SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Book Service (:8005)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/books/</div>
+      <div class="ep post">POST /api/books/</div>
+      <div class="ep get">GET /api/books/{id}/</div>
+      <div class="ep put">PUT /api/books/{id}/</div>
+      <div class="ep del">DELETE /api/books/{id}/</div>
+      <div class="ep get">GET /api/books/by_catalog/</div>
+      <div class="ep get">GET /api/books/search/</div>
+      <div class="ep post">POST /api/books/{id}/update_stock/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">BookViewSet</div>
+      <div class="view-methods">get_queryset(): filter catalog_id, search (title/author/isbn/desc), ordering</div>
+      <div class="view-methods">by_catalog(): lọc theo catalog_id</div>
+      <div class="view-methods">update_stock(): cộng/trừ tồn kho (gọi bởi order-saga)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Book</div>
+      <div class="field">id <span>| AutoField (PK)</span></div>
+      <div class="field">title <span>| CharField(300)</span></div>
+      <div class="field">author <span>| CharField(200)</span></div>
+      <div class="field">isbn <span>| CharField(13, unique)</span></div>
+      <div class="field">price <span>| DecimalField(10,2)</span></div>
+      <div class="field">stock <span>| PositiveIntegerField</span></div>
+      <div class="field">catalog_id <span>| PositiveIntegerField (FK→catalog)</span></div>
+      <div class="field">description, image_url <span>| TextField / URLField</span></div>
+      <div class="field">created_by_staff_id <span>| PositiveIntegerField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-book</div>
+    <div class="db-bottom"></div>
+  </div></div>
+</div>
+
+<!-- ===== CART SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Cart Service (:8006)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/carts/by_customer/</div>
+      <div class="ep post">POST /api/carts/add_item/</div>
+      <div class="ep put">PUT /api/carts/update_item/</div>
+      <div class="ep del">DELETE /api/carts/remove_item/</div>
+      <div class="ep del">DELETE /api/carts/clear/</div>
+      <div class="ep post">POST /api/carts/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">CartViewSet</div>
+      <div class="view-methods">by_customer(): lấy cart + enrich từng item với book details</div>
+      <div class="view-methods">add_item(): get_or_create cart → get_or_create CartItem</div>
+      <div class="view-methods">update_item(): quantity=0 → xóa item</div>
+      <div class="view-methods">clear(): xóa toàn bộ items (gọi bởi order-saga sau khi đặt hàng)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODELS</div>
+    <div class="model-box" style="margin-bottom:6px">
+      <div class="model-name">Cart</div>
+      <div class="field">id <span>| AutoField (PK)</span></div>
+      <div class="field">customer_id <span>| PositiveIntegerField(unique, FK→customer)</span></div>
+    </div>
+    <div class="model-box">
+      <div class="model-name">CartItem</div>
+      <div class="field">cart <span>| ForeignKey(Cart)</span></div>
+      <div class="field">book_id <span>| PositiveIntegerField (FK→book)</span></div>
+      <div class="field">quantity <span>| PositiveIntegerField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-cart</div>
+    <div class="db-bottom"></div>
+  </div></div>
+  <div class="ext-row" style="margin-top:10px">
+    <span style="font-size:10px;color:#6a9fc8">Gọi ra ngoài:</span>
+    <span class="ext-badge">→ Book Service (enrich items)</span>
+  </div>
+</div>
+
+<!-- ===== ORDER SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Order Service (:8007)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep post">POST /api/orders/create_from_cart/</div>
+      <div class="ep get">GET /api/orders/by_customer/</div>
+      <div class="ep get">GET /api/orders/{id}/</div>
+      <div class="ep post">POST /api/orders/{id}/cancel/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS + SAGA ORCHESTRATOR</div>
+    <div class="view-box">
+      <div class="view-name">OrderViewSet.create_from_cart()</div>
+      <div class="view-methods">1. Fetch cart từ cart-service</div>
+      <div class="view-methods">2. Fetch giá từng sách từ book-service</div>
+      <div class="view-methods">3. Tạo Order (status=pending)</div>
+      <div class="view-methods">4. Publish "order.saga.start" → RabbitMQ</div>
+      <div class="view-methods">5. Trả về 202 Accepted ngay lập tức</div>
+    </div>
+    <div class="view-box" style="margin-top:6px">
+      <div class="view-name">run_saga_worker (RabbitMQ consumer)</div>
+      <div class="view-methods">RPC payment.reserve → RPC shipping.reserve</div>
+      <div class="view-methods">Thất bại → RPC payment.compensate → cancelled</div>
+      <div class="view-methods">Thành công → confirmed → clear cart → update stock</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODELS</div>
+    <div class="model-box" style="margin-bottom:6px">
+      <div class="model-name">Order</div>
+      <div class="field">customer_id, total_amount, status</div>
+      <div class="field">payment_method, shipping_method, shipping_address</div>
+      <div class="field">payment_id, shipping_id <span>| FK (lưu sau saga)</span></div>
+    </div>
+    <div class="model-box">
+      <div class="model-name">OrderItem</div>
+      <div class="field">order <span>| FK(Order)</span> &nbsp; book_id &nbsp; quantity &nbsp; price</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-order</div>
+    <div class="db-bottom"></div>
+  </div></div>
+  <div class="ext-row" style="margin-top:10px">
+    <span class="ext-badge">→ Cart Service</span>
+    <span class="ext-badge">→ Book Service</span>
+    <span class="mq-badge">⇄ RabbitMQ Saga</span>
+  </div>
+</div>
+
+<!-- ===== PAY SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Payment Service (:8009)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/payments/by_order/</div>
+      <div class="ep post">POST /api/payments/{id}/process/</div>
+      <div class="ep post">POST /api/payments/{id}/refund/</div>
+      <div class="ep get">GET /api/payments/{id}/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS + EVENT WORKER</div>
+    <div class="view-box">
+      <div class="view-name">PaymentViewSet</div>
+      <div class="view-methods">process(): status → completed (simulate)</div>
+      <div class="view-methods">refund(): status completed → refunded</div>
+      <div class="view-methods">by_order(): lấy payment theo order_id</div>
+    </div>
+    <div class="view-box" style="margin-top:6px">
+      <div class="view-name">pay_event_worker (RabbitMQ)</div>
+      <div class="view-methods">payment.reserve → tạo Payment(pending→completed)</div>
+      <div class="view-methods">payment.compensate → refund Payment</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Payment</div>
+      <div class="field">order_id, customer_id <span>| FK references</span></div>
+      <div class="field">amount <span>| DecimalField(12,2)</span></div>
+      <div class="field">method <span>| credit_card / cod / paypal / bank_transfer</span></div>
+      <div class="field">status <span>| pending → processing → completed / failed / refunded</span></div>
+      <div class="field">transaction_id <span>| CharField (auto: PAY-XXXXXXXXXX)</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-pay</div>
+    <div class="db-bottom"></div>
+  </div></div>
+  <div class="ext-row" style="margin-top:10px">
+    <span class="mq-badge">⇄ payment.reserve / payment.compensate</span>
+  </div>
+</div>
+
+<!-- ===== SHIP SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Shipping Service (:8008)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/shipments/by_order/</div>
+      <div class="ep get">GET /api/shipments/track/</div>
+      <div class="ep post">POST /api/shipments/{id}/update_status/</div>
+      <div class="ep get">GET /api/shipments/{id}/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS + EVENT WORKER</div>
+    <div class="view-box">
+      <div class="view-name">ShipmentViewSet</div>
+      <div class="view-methods">by_order(): lấy shipment theo order_id</div>
+      <div class="view-methods">track(): tra cứu theo tracking_number</div>
+      <div class="view-methods">update_status(): cập nhật trạng thái vận chuyển</div>
+    </div>
+    <div class="view-box" style="margin-top:6px">
+      <div class="view-name">ship_event_worker (RabbitMQ)</div>
+      <div class="view-methods">shipping.reserve → tạo Shipment(pending)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Shipment</div>
+      <div class="field">order_id, customer_id <span>| FK references</span></div>
+      <div class="field">address <span>| TextField</span></div>
+      <div class="field">method <span>| standard / express / overnight</span></div>
+      <div class="field">status <span>| pending → processing → shipped → in_transit → delivered</span></div>
+      <div class="field">tracking_number <span>| CharField (auto: SHIP-XXXXXXXXXX)</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-ship</div>
+    <div class="db-bottom"></div>
+  </div></div>
+  <div class="ext-row" style="margin-top:10px">
+    <span class="mq-badge">⇄ shipping.reserve</span>
+  </div>
+</div>
+
+<!-- ===== COMMENT SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Comment & Rating Service (:8010)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep post">POST /api/comments/</div>
+      <div class="ep get">GET /api/comments/by_book/</div>
+      <div class="ep get">GET /api/comments/by_customer/</div>
+      <div class="ep get">GET /api/comments/all_ratings/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">CommentRateViewSet</div>
+      <div class="view-methods">by_book(): danh sách review + average_rating + total_reviews</div>
+      <div class="view-methods">by_customer(): tất cả review của 1 customer</div>
+      <div class="view-methods">all_ratings(): toàn bộ ratings (dùng bởi recommender)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">CommentRate</div>
+      <div class="field">customer_id <span>| PositiveIntegerField (FK→customer)</span></div>
+      <div class="field">book_id <span>| PositiveIntegerField (FK→book)</span></div>
+      <div class="field">rating <span>| PositiveIntegerField (1–5)</span></div>
+      <div class="field">comment <span>| TextField</span></div>
+      <div class="field">unique_together <span>| (customer_id, book_id)</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-comment</div>
+    <div class="db-bottom"></div>
+  </div></div>
+</div>
+
+<!-- ===== RECOMMENDER SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">AI Recommender Service (:8011)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/recommendations/?customer_id=X&amp;top_n=5</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS — Collaborative Filtering</div>
+    <div class="view-box">
+      <div class="view-name">RecommendView</div>
+      <div class="view-methods">1. Fetch all_ratings từ comment-rate-service</div>
+      <div class="view-methods">2. Xây ma trận user-item {user_id: {book_id: rating}}</div>
+      <div class="view-methods">3. Tính similarity với các user khác (cosine-like)</div>
+      <div class="view-methods">4. Dự đoán rating cho sách chưa đọc → top N</div>
+      <div class="view-methods">5. Enrich từng sách từ book-service</div>
+    </div>
+    <div class="view-box" style="margin-top:6px">
+      <div class="view-name">_recommend_popular() — Fallback</div>
+      <div class="view-methods">Chưa có rating → trả sách có avg rating cao nhất</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-recommender</div>
+    <div class="db-bottom"></div>
+  </div></div>
+  <div class="ext-row" style="margin-top:10px">
+    <span class="ext-badge">→ Comment Service (all_ratings)</span>
+    <span class="ext-badge">→ Book Service (enrich)</span>
+  </div>
+</div>
+
+<!-- ===== STAFF SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Staff Service (:8001)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/staff/</div>
+      <div class="ep post">POST /api/staff/</div>
+      <div class="ep get">GET /api/staff/{id}/</div>
+      <div class="ep put">PUT /api/staff/{id}/</div>
+      <div class="ep del">DELETE /api/staff/{id}/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">StaffViewSet</div>
+      <div class="view-methods">ModelViewSet — CRUD nhân viên (chỉ manager được ghi)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Staff</div>
+      <div class="field">id <span>| AutoField (PK)</span></div>
+      <div class="field">username <span>| CharField(unique)</span></div>
+      <div class="field">email <span>| EmailField(unique)</span></div>
+      <div class="field">password <span>| CharField(bcrypt)</span></div>
+      <div class="field">first_name, last_name <span>| CharField</span></div>
+      <div class="field">is_active <span>| BooleanField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-staff</div>
+    <div class="db-bottom"></div>
+  </div></div>
+</div>
+
+<!-- ===== MANAGER SERVICE ===== -->
+<div class="svc-card">
+  <div class="svc-title">Manager Service (:8002)</div>
+  <div class="section">
+    <div class="section-label">API ENDPOINTS</div>
+    <div class="endpoints">
+      <div class="ep get">GET /api/managers/</div>
+      <div class="ep post">POST /api/managers/</div>
+      <div class="ep get">GET /api/managers/{id}/</div>
+      <div class="ep put">PUT /api/managers/{id}/</div>
+      <div class="ep del">DELETE /api/managers/{id}/</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">VIEWS</div>
+    <div class="view-box">
+      <div class="view-name">ManagerViewSet</div>
+      <div class="view-methods">ModelViewSet — CRUD quản lý (chỉ manager được ghi)</div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="section">
+    <div class="section-label">MODEL</div>
+    <div class="model-box">
+      <div class="model-name">Manager</div>
+      <div class="field">id <span>| AutoField (PK)</span></div>
+      <div class="field">username <span>| CharField(unique)</span></div>
+      <div class="field">email <span>| EmailField(unique)</span></div>
+      <div class="field">password <span>| CharField(bcrypt)</span></div>
+      <div class="field">first_name, last_name <span>| CharField</span></div>
+      <div class="field">is_active <span>| BooleanField</span></div>
+    </div>
+  </div>
+  <div class="arrow">▼</div>
+  <div class="db-wrap"><div class="db">
+    <div class="db-top"></div>
+    <div class="db-body">postgres-manager</div>
+    <div class="db-bottom"></div>
+  </div></div>
+</div>
+
+</div><!-- end grid -->
+</body>
+</html>

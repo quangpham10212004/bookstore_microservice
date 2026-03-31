@@ -28,7 +28,8 @@ class Command(BaseCommand):
             for book_id in book_ids:
                 cart_item, item_created = CartItem.objects.get_or_create(
                     cart=cart,
-                    book_id=book_id,
+                    product_type="book",
+                    product_id=book_id,
                     defaults={"quantity": random.randint(1, 3)}
                 )
                 if item_created:

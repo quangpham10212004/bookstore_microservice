@@ -25,14 +25,15 @@ docker-compose logs -f [service-name]
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **Frontend** | http://localhost:3000 | Customer web app |
+| **Frontend** | http://localhost:3002 | Customer web app |
 | **Admin Dashboard** | http://localhost:3001 | Data management studio |
-| **API Gateway** | http://localhost:8000 | Central API endpoint |
-| Catalog Service | http://localhost:8004 | Categories API |
+| **API Gateway** | http://localhost:8100 | Central API endpoint |
+| Catalog Service | http://localhost:8104 | Categories API |
 | Book Service | http://localhost:8005 | Books API |
-| Customer Service | http://localhost:8003 | Customers API |
-| Staff Service | http://localhost:8001 | Staff API |
-| Manager Service | http://localhost:8002 | Managers API |
+| Cloth Service | http://localhost:8013 | Clothes API |
+| Customer Service | http://localhost:8103 | Customers API |
+| Staff Service | http://localhost:8101 | Staff API |
+| Manager Service | http://localhost:8102 | Managers API |
 | Cart Service | http://localhost:8006 | Shopping cart API |
 | Order Service | http://localhost:8007 | Orders API |
 | Payment Service | http://localhost:8009 | Payments API |
@@ -62,6 +63,7 @@ docker-compose exec [service-name] python manage.py seed_[model]
 ```bash
 docker-compose exec catalog-service python manage.py seed_catalogs
 docker-compose exec book-service python manage.py seed_books
+docker-compose exec cloth-service python manage.py seed_clothes
 docker-compose exec customer-service python manage.py seed_customers
 ```
 
@@ -176,6 +178,7 @@ docker-compose exec postgres-catalog psql -U postgres -d catalog_db
 - `customer_db` - Customer service
 - `catalog_db` - Catalog service
 - `book_db` - Book service
+- `cloth_db` - Cloth service
 - `cart_db` - Cart service
 - `order_db` - Order service
 - `pay_db` - Payment service
@@ -231,7 +234,7 @@ docker-compose ps
 docker-compose ps [service-name]
 
 # Health check
-curl http://localhost:8000/health  # If health endpoint exists
+curl http://localhost:8100/api/health/
 ```
 
 ## 📝 Project Structure
@@ -242,6 +245,7 @@ bookstore_microservice/
 │   └── copilot-instructions.md    # GitHub Copilot config
 ├── api-gateway/                    # API Gateway service
 ├── book-service/                   # Book management
+├── cloth-service/                  # Clothing management
 ├── catalog-service/                # Catalog management
 ├── customer-service/               # Customer management
 ├── staff-service/                  # Staff management
@@ -271,7 +275,23 @@ netstat -ano | findstr :[PORT]
 # Kill process (Windows)
 taskkill /PID [process-id] /F
 
-# Or change port in docker-compose.yml
+# This repo already avoids common clashes by using:
+# gateway 8100, staff 8101, manager 8102, customer 8103, catalog 8104
+```
+
+## Demo Cloth Flow
+
+```bash
+# Open customer UI
+http://localhost:3002/clothes
+
+# API list through gateway
+curl http://localhost:8100/api/clothes/clothes/
+
+# Add a cloth product to cart
+curl -X POST http://localhost:8100/api/carts/carts/add_item/ \
+  -H "Content-Type: application/json" \
+  -d "{\"customer_id\":52,\"product_type\":\"cloth\",\"product_id\":1,\"quantity\":2}"
 ```
 
 ### Container Won't Start

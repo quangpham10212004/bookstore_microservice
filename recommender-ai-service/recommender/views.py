@@ -36,6 +36,8 @@ class RecommendView(APIView):
         # Step 2: Build user-item rating matrix
         user_ratings = defaultdict(dict)  # {user_id: {book_id: rating}}
         for r in all_ratings:
+            if r.get("product_type") != "book":
+                continue
             user_ratings[r["customer_id"]][r["book_id"]] = r["rating"]
 
         target_ratings = user_ratings.get(customer_id, {})
@@ -91,6 +93,8 @@ class RecommendView(APIView):
         """Fallback: recommend books with highest average rating."""
         book_scores = defaultdict(list)
         for r in all_ratings:
+            if r.get("product_type") != "book":
+                continue
             book_scores[r["book_id"]].append(r["rating"])
 
         popular = []

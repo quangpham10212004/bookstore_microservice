@@ -64,7 +64,8 @@ class Command(BaseCommand):
                 
                 OrderItem.objects.create(
                     order=order,
-                    book_id=book_id,
+                    product_type="book",
+                    product_id=book_id,
                     quantity=quantity,
                     price=price
                 )

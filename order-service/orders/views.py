@@ -10,6 +10,7 @@ from .event_bus import publish
 
 CART_SERVICE_URL = os.environ.get("CART_SERVICE_URL", "http://cart-service:8000")
 BOOK_SERVICE_URL = os.environ.get("BOOK_SERVICE_URL", "http://book-service:8000")
+CLOTH_SERVICE_URL = os.environ.get("CLOTH_SERVICE_URL", "http://cloth-service:8000")
 PAY_SERVICE_URL = os.environ.get("PAY_SERVICE_URL", "http://pay-service:8000")
 SHIP_SERVICE_URL = os.environ.get("SHIP_SERVICE_URL", "http://ship-service:8000")
 
@@ -31,6 +32,12 @@ def metrics_view(request):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def _service_url_for_item(self, product_type):
+        return BOOK_SERVICE_URL if product_type == "book" else CLOTH_SERVICE_URL
+
+    def _resource_path_for_item(self, product_type):
+        return "books" if product_type == "book" else "clothes"
 
     @action(detail=False, methods=["post"])
     def create_from_cart(self, request):
@@ -65,18 +72,27 @@ class OrderViewSet(viewsets.ModelViewSet):
             METRICS["create_from_cart_errors"] += 1
             return Response({"error": "Cart is empty"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 2. Fetch book prices and calculate total
+        # 2. Fetch product prices and calculate total
         total = 0
         order_items = []
         for item in cart_data["items"]:
             try:
-                book_resp = requests.get(f"{BOOK_SERVICE_URL}/api/books/{item['book_id']}/", timeout=5)
-                book = book_resp.json()
-                price = float(book["price"])
+                service_url = self._service_url_for_item(item["product_type"])
+                resource = self._resource_path_for_item(item["product_type"])
+                product_resp = requests.get(f"{service_url}/api/{resource}/{item['product_id']}/", timeout=5)
+                product = product_resp.json()
+                price = float(product["price"])
             except requests.RequestException:
                 METRICS["create_from_cart_errors"] += 1
-                return Response({"error": f"Failed to fetch book {item['book_id']}"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-            order_items.append({"book_id": item["book_id"], "quantity": item["quantity"], "price": price})
+                return Response({"error": f"Failed to fetch product {item['product_id']}"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            order_items.append(
+                {
+                    "product_type": item["product_type"],
+                    "product_id": item["product_id"],
+                    "quantity": item["quantity"],
+                    "price": price,
+                }
+            )
             total += price * item["quantity"]
 
         # 3. Create order
@@ -101,6 +117,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 "simulate_shipping_failure": simulate_shipping_failure,
                 "cart_service_url": CART_SERVICE_URL,
                 "book_service_url": BOOK_SERVICE_URL,
+                "cloth_service_url": CLOTH_SERVICE_URL,
             },
         )
         METRICS["saga_started"] += 1

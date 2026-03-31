@@ -71,7 +71,8 @@ class Command(BaseCommand):
             
             comment_rate, created = CommentRate.objects.get_or_create(
                 customer_id=customer_id,
-                book_id=book_id,
+                product_type="book",
+                product_id=book_id,
                 defaults={
                     "rating": rating,
                     "comment": comment

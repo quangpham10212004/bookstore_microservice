@@ -11,13 +11,19 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    PRODUCT_TYPE_CHOICES = [
+        ("book", "Book"),
+        ("cloth", "Cloth"),
+    ]
+
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
-    book_id = models.PositiveIntegerField(help_text="FK to book-service")
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPE_CHOICES, default="book")
+    product_id = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ["cart", "book_id"]
+        unique_together = ["cart", "product_type", "product_id"]
 
     def __str__(self):
-        return f"CartItem(cart={self.cart_id}, book={self.book_id}, qty={self.quantity})"
+        return f"CartItem(cart={self.cart_id}, type={self.product_type}, product={self.product_id}, qty={self.quantity})"

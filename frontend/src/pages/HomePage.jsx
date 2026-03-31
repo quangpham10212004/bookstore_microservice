@@ -2,28 +2,33 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   FiArrowRight,
+  FiGift,
   FiTruck,
   FiShield,
   FiHeadphones,
   FiCreditCard,
 } from "react-icons/fi";
-import { bookService, catalogService } from "../services";
+import { bookService, catalogService, clothService } from "../services";
 import BookCard from "../components/BookCard";
+import ClothCard from "../components/ClothCard";
 import Loading from "../components/Loading";
 
 export default function HomePage() {
   const [newBooks, setNewBooks] = useState([]);
+  const [featuredClothes, setFeaturedClothes] = useState([]);
   const [catalogs, setCatalogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [booksRes, catalogsRes] = await Promise.all([
+        const [booksRes, clothesRes, catalogsRes] = await Promise.all([
           bookService.getAll({ limit: 8 }),
+          clothService.getAll({ limit: 4 }),
           catalogService.getAll(),
         ]);
         setNewBooks(booksRes.data.results || booksRes.data || []);
+        setFeaturedClothes(clothesRes.data.results || clothesRes.data || []);
         setCatalogs(catalogsRes.data.results || catalogsRes.data || []);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -43,7 +48,7 @@ export default function HomePage() {
     {
       icon: FiShield,
       title: "Đảm bảo chất lượng",
-      desc: "Sách chính hãng 100%",
+      desc: "Sách và quần áo chọn lọc",
     },
     { icon: FiHeadphones, title: "Hỗ trợ 24/7", desc: "Tư vấn nhiệt tình" },
     {
@@ -74,10 +79,10 @@ export default function HomePage() {
                 Mua sách ngay
               </Link>
               <Link
-                to="/books?sort=bestseller"
+                to="/clothes"
                 className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-accent-700 transition-colors"
               >
-                Sách bán chạy
+                Khám phá thời trang
               </Link>
             </div>
           </div>
@@ -139,6 +144,30 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="py-12 bg-gradient-to-br from-orange-50 via-amber-50 to-white">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="section-title mb-0">Bộ sưu tập quần áo mới</h2>
+            <Link
+              to="/clothes?sort=newest"
+              className="text-primary-600 hover:text-primary-700 font-medium flex items-center"
+            >
+              Xem tất cả <FiArrowRight className="ml-1" />
+            </Link>
+          </div>
+
+          {loading ? (
+            <Loading />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {featuredClothes.slice(0, 4).map((cloth) => (
+                <ClothCard key={cloth.id} cloth={cloth} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* New Books */}
       <section className="py-12 bg-gray-100">
         <div className="container mx-auto px-4">
@@ -184,7 +213,10 @@ export default function HomePage() {
               type="submit"
               className="bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
             >
-              Đăng ký
+              <span className="inline-flex items-center gap-2">
+                <FiGift className="w-4 h-4" />
+                Đăng ký
+              </span>
             </button>
           </form>
         </div>

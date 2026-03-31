@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom";
 import { FiMinus, FiPlus, FiTrash2, FiShoppingBag } from "react-icons/fi";
+
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
+import {
+  getProductEmoji,
+  getProductFromItem,
+  getProductLink,
+  getProductName,
+  getProductSubtitle,
+} from "../utils/product";
 
 export default function CartPage() {
   const { cart, loading, updateItem, removeItem } = useCart();
@@ -43,7 +51,7 @@ export default function CartPage() {
           title="Giỏ hàng trống"
           description="Bạn chưa có sản phẩm nào trong giỏ hàng"
           action={
-            <Link to="/books" className="btn-primary">
+            <Link to="/" className="btn-primary">
               Mua sắm ngay
             </Link>
           }
@@ -60,72 +68,83 @@ export default function CartPage() {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {cart.items.map((item) => (
-            <div
-              key={item.book_id}
-              className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-slate-100 flex gap-4"
-            >
-              <Link
-                to={`/books/${item.book_id}`}
-                className="w-24 h-32 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden"
-              >
-                {item.book?.image_url ? (
-                  <img
-                    src={item.book.image_url}
-                    alt={item.book.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
-                    <span className="text-3xl">📚</span>
-                  </div>
-                )}
-              </Link>
+            (() => {
+              const product = getProductFromItem(item);
+              const productName = getProductName(product, item.product_type);
+              const productSubtitle = getProductSubtitle(product, item.product_type);
+              const productLink = getProductLink(item.product_type, item.product_id);
 
-              <div className="flex-grow">
-                <Link
-                  to={`/books/${item.book_id}`}
-                  className="font-semibold text-gray-800 hover:text-accent-700 line-clamp-2"
+              return (
+                <div
+                  key={`${item.product_type}-${item.product_id}`}
+                  className="bg-white rounded-xl p-4 shadow-sm ring-1 ring-slate-100 flex gap-4"
                 >
-                  {item.book?.title || `Sách #${item.book_id}`}
-                </Link>
-                <p className="text-gray-500 text-sm mt-1">
-                  {item.book?.author}
-                </p>
+                  <Link
+                    to={productLink}
+                    className="w-24 h-32 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden"
+                  >
+                    {product?.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={productName}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
+                        <span className="text-3xl">{getProductEmoji(item.product_type)}</span>
+                      </div>
+                    )}
+                  </Link>
 
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="flex items-center border rounded-lg">
-                    <button
-                      onClick={() =>
-                        updateItem(item.book_id, Math.max(1, item.quantity - 1))
-                      }
-                      className="p-2 hover:bg-gray-100 transition-colors"
+                  <div className="flex-grow">
+                    <Link
+                      to={productLink}
+                      className="font-semibold text-gray-800 hover:text-accent-700 line-clamp-2"
                     >
-                      <FiMinus className="w-4 h-4" />
-                    </button>
-                    <span className="px-3 font-medium">{item.quantity}</span>
-                    <button
-                      onClick={() =>
-                        updateItem(item.book_id, item.quantity + 1)
-                      }
-                      className="p-2 hover:bg-gray-100 transition-colors"
-                    >
-                      <FiPlus className="w-4 h-4" />
-                    </button>
+                      {productName}
+                    </Link>
+                    <p className="text-gray-500 text-sm mt-1">{productSubtitle}</p>
+
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center border rounded-lg">
+                        <button
+                          onClick={() =>
+                            updateItem(
+                              item.product_id,
+                              Math.max(1, item.quantity - 1),
+                              item.product_type,
+                            )
+                          }
+                          className="p-2 hover:bg-gray-100 transition-colors"
+                        >
+                          <FiMinus className="w-4 h-4" />
+                        </button>
+                        <span className="px-3 font-medium">{item.quantity}</span>
+                        <button
+                          onClick={() =>
+                            updateItem(item.product_id, item.quantity + 1, item.product_type)
+                          }
+                          className="p-2 hover:bg-gray-100 transition-colors"
+                        >
+                          <FiPlus className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <span className="font-bold text-primary-700">
+                        {product && formatPrice(product.price * item.quantity)}
+                      </span>
+                    </div>
                   </div>
 
-                  <span className="font-bold text-primary-700">
-                    {item.book && formatPrice(item.book.price * item.quantity)}
-                  </span>
+                  <button
+                    onClick={() => removeItem(item.product_id, item.product_type)}
+                    className="p-2 text-gray-400 hover:text-red-500 transition-colors self-start"
+                  >
+                    <FiTrash2 className="w-5 h-5" />
+                  </button>
                 </div>
-              </div>
-
-              <button
-                onClick={() => removeItem(item.book_id)}
-                className="p-2 text-gray-400 hover:text-red-500 transition-colors self-start"
-              >
-                <FiTrash2 className="w-5 h-5" />
-              </button>
-            </div>
+              );
+            })()
           ))}
         </div>
 
@@ -162,7 +181,7 @@ export default function CartPage() {
             </Link>
 
             <Link
-              to="/books"
+              to="/"
               className="block text-center text-accent-700 hover:text-accent-800 mt-4"
             >
               Tiếp tục mua sắm

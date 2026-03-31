@@ -15,10 +15,24 @@ class CommentRateViewSet(viewsets.ModelViewSet):
         book_id = request.query_params.get("book_id")
         if not book_id:
             return Response({"error": "book_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        reviews = CommentRate.objects.filter(book_id=book_id)
+        reviews = CommentRate.objects.filter(product_type="book", product_id=book_id)
         avg = reviews.aggregate(avg_rating=Avg("rating"))
         return Response({
             "book_id": int(book_id),
+            "average_rating": avg["avg_rating"],
+            "total_reviews": reviews.count(),
+            "reviews": CommentRateSerializer(reviews, many=True).data,
+        })
+
+    @action(detail=False, methods=["get"])
+    def by_cloth(self, request):
+        cloth_id = request.query_params.get("cloth_id")
+        if not cloth_id:
+            return Response({"error": "cloth_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        reviews = CommentRate.objects.filter(product_type="cloth", product_id=cloth_id)
+        avg = reviews.aggregate(avg_rating=Avg("rating"))
+        return Response({
+            "cloth_id": int(cloth_id),
             "average_rating": avg["avg_rating"],
             "total_reviews": reviews.count(),
             "reviews": CommentRateSerializer(reviews, many=True).data,

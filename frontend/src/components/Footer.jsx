@@ -22,8 +22,8 @@ export default function Footer() {
               <span className="text-xl font-bold">BookStore</span>
             </div>
             <p className="text-slate-300 text-sm">
-              Nhà sách trực tuyến hàng đầu Việt Nam với hàng nghìn đầu sách đa
-              dạng, giá cả cạnh tranh và dịch vụ giao hàng nhanh chóng.
+              Cửa hàng trực tuyến với cả sách và thời trang cơ bản, giá cạnh tranh
+              và dịch vụ giao hàng nhanh chóng.
             </p>
           </div>
 
@@ -37,6 +37,14 @@ export default function Footer() {
                   className="text-slate-300 hover:text-primary-200 transition-colors"
                 >
                   Tất cả sách
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/clothes"
+                  className="text-slate-300 hover:text-primary-200 transition-colors"
+                >
+                  Thời trang mới
                 </Link>
               </li>
               <li>
@@ -57,10 +65,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/books?sort=discount"
+                  to="/clothes?sort=price_low"
                   className="text-slate-300 hover:text-primary-200 transition-colors"
                 >
-                  Khuyến mãi
+                  Giá tốt
                 </Link>
               </li>
             </ul>

@@ -81,6 +81,20 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-cloth:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=cloth_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-cloth-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   postgres-cart:
     image: postgres:15-alpine
     environment:
@@ -187,7 +201,7 @@ services:
   api-gateway:
     build: ./api-gateway
     ports:
-      - "8000:8000"
+      - "8100:8000"
     environment:
       - AUTH_SERVICE_URL=http://auth-service:8000
       - STAFF_SERVICE_URL=http://staff-service:8000
@@ -195,6 +209,7 @@ services:
       - CUSTOMER_SERVICE_URL=http://customer-service:8000
       - CATALOG_SERVICE_URL=http://catalog-service:8000
       - BOOK_SERVICE_URL=http://book-service:8000
+      - CLOTH_SERVICE_URL=http://cloth-service:8000
       - CART_SERVICE_URL=http://cart-service:8000
       - ORDER_SERVICE_URL=http://order-service:8000
       - SHIP_SERVICE_URL=http://ship-service:8000
@@ -208,6 +223,7 @@ services:
       - customer-service
       - catalog-service
       - book-service
+      - cloth-service
       - cart-service
       - order-service
       - ship-service
@@ -229,7 +245,7 @@ services:
   staff-service:
     build: ./staff-service
     ports:
-      - "8001:8000"
+      - "8101:8000"
     environment:
       - DB_HOST=postgres-staff
       - DB_NAME=staff_db
@@ -245,7 +261,7 @@ services:
   manager-service:
     build: ./manager-service
     ports:
-      - "8002:8000"
+      - "8102:8000"
     environment:
       - DB_HOST=postgres-manager
       - DB_NAME=manager_db
@@ -261,7 +277,7 @@ services:
   customer-service:
     build: ./customer-service
     ports:
-      - "8003:8000"
+      - "8103:8000"
     environment:
       - CART_SERVICE_URL=http://cart-service:8000
       - DB_HOST=postgres-customer
@@ -280,7 +296,7 @@ services:
   catalog-service:
     build: ./catalog-service
     ports:
-      - "8004:8000"
+      - "8104:8000"
     environment:
       - DB_HOST=postgres-catalog
       - DB_NAME=catalog_db
@@ -310,6 +326,24 @@ services:
     volumes:
       - book-data:/app/data
 
+  # ─────────────────── Cloth Service ───────────────────
+  cloth-service:
+    build: ./cloth-service
+    ports:
+      - "8013:8000"
+    environment:
+      - STAFF_SERVICE_URL=http://staff-service:8000
+      - CATALOG_SERVICE_URL=http://catalog-service:8000
+      - DB_HOST=postgres-cloth
+      - DB_NAME=cloth_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      postgres-cloth:
+        condition: service_healthy
+    volumes:
+      - cloth-data:/app/data
+
   # ─────────────────── Cart Service ───────────────────
   cart-service:
     build: ./cart-service
@@ -317,6 +351,7 @@ services:
       - "8006:8000"
     environment:
       - BOOK_SERVICE_URL=http://book-service:8000
+      - CLOTH_SERVICE_URL=http://cloth-service:8000
       - DB_HOST=postgres-cart
       - DB_NAME=cart_db
       - DB_USER=postgres
@@ -336,6 +371,7 @@ services:
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/%2F
       - CART_SERVICE_URL=http://cart-service:8000
       - BOOK_SERVICE_URL=http://book-service:8000
+      - CLOTH_SERVICE_URL=http://cloth-service:8000
       - PAY_SERVICE_URL=http://pay-service:8000
       - SHIP_SERVICE_URL=http://ship-service:8000
       - DB_HOST=postgres-order
@@ -346,6 +382,8 @@ services:
       cart-service:
         condition: service_started
       book-service:
+        condition: service_started
+      cloth-service:
         condition: service_started
       pay-service:
         condition: service_started
@@ -360,11 +398,12 @@ services:
 
   order-saga-worker:
     build: ./order-service
-    command: ["sh", "-c", "python manage.py migrate --run-syncdb && python manage.py run_saga_worker"]
+    command: ["sh", "-c", "python manage.py migrate --fake-initial && python manage.py ensure_compat_schema && python manage.py run_saga_worker"]
     environment:
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/%2F
       - CART_SERVICE_URL=http://cart-service:8000
       - BOOK_SERVICE_URL=http://book-service:8000
+      - CLOTH_SERVICE_URL=http://cloth-service:8000
       - DB_HOST=postgres-order
       - DB_NAME=order_db
       - DB_USER=postgres
@@ -489,6 +528,7 @@ volumes:
   postgres-customer-data:
   postgres-catalog-data:
   postgres-book-data:
+  postgres-cloth-data:
   postgres-cart-data:
   postgres-order-data:
   postgres-ship-data:
@@ -500,6 +540,7 @@ volumes:
   customer-data:
   catalog-data:
   book-data:
+  cloth-data:
   cart-data:
   order-data:
   ship-data:

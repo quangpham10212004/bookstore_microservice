@@ -29,10 +29,16 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    PRODUCT_TYPE_CHOICES = [
+        ("book", "Book"),
+        ("cloth", "Cloth"),
+    ]
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
-    book_id = models.PositiveIntegerField(help_text="FK to book-service")
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPE_CHOICES, default="book")
+    product_id = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"OrderItem(order={self.order_id}, book={self.book_id})"
+        return f"OrderItem(order={self.order_id}, type={self.product_type}, product={self.product_id})"

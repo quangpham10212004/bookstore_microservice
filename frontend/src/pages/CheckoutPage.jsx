@@ -7,6 +7,11 @@ import { orderService } from "../services";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
+import {
+  getProductEmoji,
+  getProductFromItem,
+  getProductName,
+} from "../utils/product";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -83,7 +88,7 @@ export default function CheckoutPage() {
       const response = await orderService.create(orderData);
       await clearCart();
       toast.success("Đặt hàng thành công!");
-      navigate(`/orders/${response.data.id}`);
+      navigate(`/orders/${response.data.order?.id || response.data.id}`);
     } catch (error) {
       toast.error(error.response?.data?.error || "Không thể đặt hàng");
     } finally {
@@ -116,7 +121,7 @@ export default function CheckoutPage() {
           title="Giỏ hàng trống"
           description="Không có sản phẩm để thanh toán"
           action={
-            <Link to="/books" className="btn-primary">
+            <Link to="/" className="btn-primary">
               Mua sắm ngay
             </Link>
           }
@@ -358,16 +363,13 @@ export default function CheckoutPage() {
                   <div className="border-t pt-4">
                     <h3 className="font-medium text-gray-800 mb-2">Sản phẩm</h3>
                     {cart.items.map((item) => (
-                      <div
-                        key={item.book_id}
-                        className="flex justify-between py-2"
-                      >
+                      <div key={`${item.product_type}-${item.product_id}`} className="flex justify-between py-2">
                         <span className="text-gray-600">
-                          {item.book?.title} x {item.quantity}
+                          {getProductName(getProductFromItem(item), item.product_type)} x {item.quantity}
                         </span>
                         <span className="font-medium">
-                          {item.book &&
-                            formatPrice(item.book.price * item.quantity)}
+                          {getProductFromItem(item) &&
+                            formatPrice(getProductFromItem(item).price * item.quantity)}
                         </span>
                       </div>
                     ))}
@@ -412,28 +414,29 @@ export default function CheckoutPage() {
 
             <div className="space-y-3 border-b pb-4 mb-4 max-h-64 overflow-y-auto">
               {cart.items.map((item) => (
-                <div key={item.book_id} className="flex gap-3">
+                <div key={`${item.product_type}-${item.product_id}`} className="flex gap-3">
                   <div className="w-16 h-20 bg-gray-100 rounded flex-shrink-0">
-                    {item.book?.image_url ? (
+                    {getProductFromItem(item)?.image_url ? (
                       <img
-                        src={item.book.image_url}
+                        src={getProductFromItem(item).image_url}
                         alt=""
                         className="w-full h-full object-cover rounded"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-2xl">
-                        📚
+                        {getProductEmoji(item.product_type)}
                       </div>
                     )}
                   </div>
                   <div className="flex-grow">
                     <p className="text-sm font-medium text-gray-800 line-clamp-2">
-                      {item.book?.title}
+                      {getProductName(getProductFromItem(item), item.product_type)}
                     </p>
                     <p className="text-sm text-gray-500">x{item.quantity}</p>
                   </div>
                   <span className="text-sm font-medium">
-                    {item.book && formatPrice(item.book.price * item.quantity)}
+                    {getProductFromItem(item) &&
+                      formatPrice(getProductFromItem(item).price * item.quantity)}
                   </span>
                 </div>
               ))}

@@ -2,9 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiPackage, FiTruck, FiCheck, FiX } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-import { orderService, bookService } from "../services";
+import { orderService, productService } from "../services";
 import Loading from "../components/Loading";
 import { toast } from "react-toastify";
+import {
+  getProductEmoji,
+  getProductLink,
+  getProductName,
+  getProductSubtitle,
+} from "../utils/product";
 
 export default function OrderDetailPage() {
   const { id } = useParams();
@@ -25,19 +31,21 @@ export default function OrderDetailPage() {
         const response = await orderService.getById(id);
         const orderData = response.data;
 
-        // Fetch book details for each item
-        const itemsWithBooks = await Promise.all(
+        const itemsWithProducts = await Promise.all(
           (orderData.items || []).map(async (item) => {
             try {
-              const bookRes = await bookService.getById(item.book_id);
-              return { ...item, book: bookRes.data };
+              const productRes = await productService.getByType(
+                item.product_type,
+                item.product_id,
+              );
+              return { ...item, product: productRes.data };
             } catch {
-              return { ...item, book: null };
+              return { ...item, product: null };
             }
           }),
         );
 
-        setOrder({ ...orderData, items: itemsWithBooks });
+        setOrder({ ...orderData, items: itemsWithProducts });
       } catch (error) {
         console.error("Error fetching order:", error);
         toast.error("Không tìm thấy đơn hàng");
@@ -202,30 +210,32 @@ export default function OrderDetailPage() {
                   className="flex gap-4 py-4 first:pt-0 last:pb-0"
                 >
                   <Link
-                    to={`/books/${item.book_id}`}
+                    to={getProductLink(item.product_type, item.product_id)}
                     className="w-20 h-28 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden"
                   >
-                    {item.book?.image_url ? (
+                    {item.product?.image_url ? (
                       <img
-                        src={item.book.image_url}
-                        alt={item.book.title}
+                        src={item.product.image_url}
+                        alt={getProductName(item.product, item.product_type)}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-100 to-accent-100">
-                        <span className="text-3xl">📚</span>
+                        <span className="text-3xl">{getProductEmoji(item.product_type)}</span>
                       </div>
                     )}
                   </Link>
 
                   <div className="flex-grow">
                     <Link
-                      to={`/books/${item.book_id}`}
+                      to={getProductLink(item.product_type, item.product_id)}
                       className="font-medium text-gray-800 hover:text-accent-700"
                     >
-                      {item.book?.title || `Sách #${item.book_id}`}
+                      {getProductName(item.product, item.product_type)}
                     </Link>
-                    <p className="text-gray-500 text-sm">{item.book?.author}</p>
+                    <p className="text-gray-500 text-sm">
+                      {getProductSubtitle(item.product, item.product_type)}
+                    </p>
                     <div className="mt-2 flex items-center justify-between">
                       <span className="text-gray-600">
                         Số lượng: {item.quantity}

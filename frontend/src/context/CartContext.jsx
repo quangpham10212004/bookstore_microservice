@@ -24,20 +24,19 @@ export function CartProvider({ children }) {
       const response = await cartService.getCart(customer.id);
       const cartData = response.data;
 
-      // Cart items đã có book data từ backend
-      const itemsWithBooks = (cartData.items || []).map((item) => ({
+      const itemsWithProducts = (cartData.items || []).map((item) => ({
         ...item,
-        book: item.book || null,
+        product: item.product || item[item.product_type] || item.book || item.cloth || null,
       }));
 
-      const total = itemsWithBooks.reduce((sum, item) => {
-        if (item.book) {
-          return sum + parseFloat(item.book.price) * item.quantity;
+      const total = itemsWithProducts.reduce((sum, item) => {
+        if (item.product) {
+          return sum + parseFloat(item.product.price) * item.quantity;
         }
         return sum;
       }, 0);
 
-      setCart({ items: itemsWithBooks, total });
+      setCart({ items: itemsWithProducts, total });
     } catch (error) {
       // Cart không tồn tại - sẽ tự tạo khi thêm item
       setCart({ items: [], total: 0 });
@@ -50,14 +49,14 @@ export function CartProvider({ children }) {
     fetchCart();
   }, [fetchCart]);
 
-  const addItem = async (bookId, quantity = 1) => {
+  const addItem = async (productId, quantity = 1, productType = "book") => {
     if (!isAuthenticated) {
       toast.warning("Vui lòng đăng nhập để thêm vào giỏ hàng");
       return false;
     }
 
     try {
-      await cartService.addItem(customer.id, bookId, quantity);
+      await cartService.addItem(customer.id, productId, quantity, productType);
       await fetchCart();
       toast.success("Đã thêm vào giỏ hàng");
       return true;
@@ -67,9 +66,9 @@ export function CartProvider({ children }) {
     }
   };
 
-  const updateItem = async (bookId, quantity) => {
+  const updateItem = async (productId, quantity, productType = "book") => {
     try {
-      await cartService.updateItem(customer.id, bookId, quantity);
+      await cartService.updateItem(customer.id, productId, quantity, productType);
       await fetchCart();
       return true;
     } catch (error) {
@@ -78,9 +77,9 @@ export function CartProvider({ children }) {
     }
   };
 
-  const removeItem = async (bookId) => {
+  const removeItem = async (productId, productType = "book") => {
     try {
-      await cartService.removeItem(customer.id, bookId);
+      await cartService.removeItem(customer.id, productId, productType);
       await fetchCart();
       toast.success("Đã xóa khỏi giỏ hàng");
       return true;

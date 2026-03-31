@@ -76,6 +76,12 @@ export default function Header() {
             >
               Sách
             </Link>
+            <Link
+              to="/clothes"
+              className="text-gray-600 hover:text-primary-600 font-medium"
+            >
+              Quần áo
+            </Link>
 
             <Link
               to="/cart"
@@ -168,6 +174,13 @@ export default function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               Sách
+            </Link>
+            <Link
+              to="/clothes"
+              className="block text-gray-600 hover:text-primary-600 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Quần áo
             </Link>
             <Link
               to="/cart"

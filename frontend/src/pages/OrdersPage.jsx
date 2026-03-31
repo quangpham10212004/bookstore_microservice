@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiPackage, FiEye } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-import { orderService, bookService } from "../services";
+import { orderService, productService } from "../services";
 import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
+import { getProductEmoji, getProductName } from "../utils/product";
 
 export default function OrdersPage() {
   const navigate = useNavigate();
@@ -23,36 +24,37 @@ export default function OrdersPage() {
         const response = await orderService.getAll(customer.id);
         const rawOrders = response.data.results || response.data || [];
 
-        const bookIds = [
+        const productKeys = [
           ...new Set(
             rawOrders.flatMap((order) =>
-              (order.items || []).map((item) => item.book_id),
+              (order.items || []).map((item) => `${item.product_type}:${item.product_id}`),
             ),
           ),
         ];
 
-        const bookPairs = await Promise.all(
-          bookIds.map(async (bookId) => {
+        const productPairs = await Promise.all(
+          productKeys.map(async (key) => {
+            const [productType, productId] = key.split(":");
             try {
-              const bookResponse = await bookService.getById(bookId);
-              return [bookId, bookResponse.data];
+              const productResponse = await productService.getByType(productType, productId);
+              return [key, productResponse.data];
             } catch {
-              return [bookId, null];
+              return [key, null];
             }
           }),
         );
 
-        const bookMap = new Map(bookPairs);
+        const productMap = new Map(productPairs);
 
-        const ordersWithBooks = rawOrders.map((order) => ({
+        const ordersWithProducts = rawOrders.map((order) => ({
           ...order,
           items: (order.items || []).map((item) => ({
             ...item,
-            book: bookMap.get(item.book_id) || null,
+            product: productMap.get(`${item.product_type}:${item.product_id}`) || null,
           })),
         }));
 
-        setOrders(ordersWithBooks);
+        setOrders(ordersWithProducts);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -116,7 +118,7 @@ export default function OrdersPage() {
           title="Chưa có đơn hàng"
           description="Bạn chưa có đơn hàng nào"
           action={
-            <Link to="/books" className="btn-primary">
+            <Link to="/" className="btn-primary">
               Mua sắm ngay
             </Link>
           }
@@ -172,15 +174,15 @@ export default function OrdersPage() {
                     key={index}
                     className="w-16 h-20 bg-gray-100 rounded flex-shrink-0 overflow-hidden"
                   >
-                    {item.book?.image_url ? (
+                    {item.product?.image_url ? (
                       <img
-                        src={item.book.image_url}
-                        alt={item.book?.title || `Sách #${item.book_id}`}
+                        src={item.product.image_url}
+                        alt={getProductName(item.product, item.product_type)}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-2xl">📚</span>
+                        <span className="text-2xl">{getProductEmoji(item.product_type)}</span>
                       </div>
                     )}
                   </div>

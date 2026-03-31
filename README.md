@@ -1,23 +1,24 @@
 # BookStore Microservices
 
-A microservice-based bookstore built with **Django REST Framework**, **Docker Compose**, and independent databases.
+A microservice-based bookstore and fashion store built with **Django REST Framework**, **Docker Compose**, and independent databases.
 
 ## Architecture
 
 | #   | Service                    | Port | Description                                             |
 | --- | -------------------------- | ---- | ------------------------------------------------------- |
-| 1   | **api-gateway**            | 8000 | Routes all client requests to downstream services       |
+| 1   | **api-gateway**            | 8100 | Routes all client requests to downstream services       |
 | 1.1 | **auth-service**           | 8012 | JWT issuance/validation + role claims                   |
-| 2   | **staff-service**          | 8001 | Staff user management (CRUD)                            |
-| 3   | **manager-service**        | 8002 | Manager user management (CRUD)                          |
-| 4   | **customer-service**       | 8003 | Customer registration (auto-creates cart) & login       |
-| 5   | **catalog-service**        | 8004 | Book categories/catalogs                                |
+| 2   | **staff-service**          | 8101 | Staff user management (CRUD)                            |
+| 3   | **manager-service**        | 8102 | Manager user management (CRUD)                          |
+| 4   | **customer-service**       | 8103 | Customer registration (auto-creates cart) & login       |
+| 5   | **catalog-service**        | 8104 | Shared categories/catalogs                              |
 | 6   | **book-service**           | 8005 | Book CRUD (managed by staff), search, stock             |
+| 6.1 | **cloth-service**          | 8013 | Clothing CRUD, search, stock                            |
 | 7   | **cart-service**           | 8006 | Shopping cart add/view/update/remove                    |
 | 8   | **order-service**          | 8007 | Order creation (triggers payment & shipping)            |
 | 9   | **ship-service**           | 8008 | Shipment tracking & status                              |
 | 10  | **pay-service**            | 8009 | Payment processing & refunds                            |
-| 11  | **comment-rate-service**   | 8010 | Book ratings & comments                                 |
+| 11  | **comment-rate-service**   | 8010 | Product ratings & comments                              |
 | 12  | **recommender-ai-service** | 8011 | AI-based book recommendations (collaborative filtering) |
 
 ## Quick Start
@@ -26,7 +27,7 @@ A microservice-based bookstore built with **Django REST Framework**, **Docker Co
 docker-compose up --build
 ```
 
-## API Endpoints (via Gateway at port 8000)
+## API Endpoints (via Gateway at port 8100)
 
 ### Customers
 
@@ -42,12 +43,19 @@ docker-compose up --build
 - `GET /api/books/search/?q=keyword`
 - `GET /api/books/by_catalog/?catalog_id=1`
 
+### Clothes
+
+- `GET /api/clothes/clothes/` — List all clothes
+- `GET /api/clothes/clothes/{id}/`
+- `GET /api/clothes/clothes/?search=ao`
+- `GET /api/clothes/clothes/by_catalog/?catalog_id=1`
+
 ### Cart
 
 - `GET /api/carts/by_customer/?customer_id=1` — View cart
-- `POST /api/carts/add_item/` — Add book to cart `{customer_id, book_id, quantity}`
-- `PUT /api/carts/update_item/` — Update quantity `{customer_id, book_id, quantity}`
-- `DELETE /api/carts/remove_item/?customer_id=1&book_id=1`
+- `POST /api/carts/add_item/` — Add product to cart `{customer_id, product_type, product_id, quantity}`
+- `PUT /api/carts/update_item/` — Update quantity `{customer_id, product_type, product_id, quantity}`
+- `DELETE /api/carts/remove_item/?customer_id=1&product_type=cloth&product_id=1`
 
 ### Orders
 
@@ -69,8 +77,9 @@ docker-compose up --build
 
 ### Comments & Ratings
 
-- `POST /api/comments/` — `{customer_id, book_id, rating, comment}`
+- `POST /api/comments/` — `{customer_id, book_id|cloth_id, rating, comment}`
 - `GET /api/comments/by_book/?book_id=1`
+- `GET /api/comments/by_cloth/?cloth_id=1`
 - `GET /api/comments/by_customer/?customer_id=1`
 
 ### Recommendations
@@ -98,10 +107,10 @@ Hybrid communication model:
 
 - **customer-service → cart-service**: Auto-create cart on registration
 - **order-service → cart-service**: Fetch cart items
-- **order-service → book-service**: Fetch prices, update stock
+- **order-service → book-service / cloth-service**: Fetch prices, update stock
 - **order-saga-worker → pay-event-worker**: `payment.reserve` / `payment.compensate`
 - **order-saga-worker → ship-event-worker**: `shipping.reserve`
-- **cart-service → book-service**: Enrich cart items with book details
+- **cart-service → book-service / cloth-service**: Enrich cart items with product details
 - **recommender-ai-service → comment-rate-service**: Fetch all ratings
 - **recommender-ai-service → book-service**: Fetch book details
 - **api-gateway → all services**: Proxy HTTP requests
@@ -123,7 +132,7 @@ See [docs/ASSIGNMENT_06_REPORT.md](docs/ASSIGNMENT_06_REPORT.md) for JWT, Saga, 
 
 ### Frontend
 
-- **Main App** (port 3000): React 18 + Vite + TypeScript
+- **Main App** (Docker port 3002): React 18 + Vite
 - **Admin Dashboard** (port 3001): Next.js 14 + TypeScript + Shadcn UI
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
@@ -183,6 +192,7 @@ This will create:
 - 5 Managers
 - 50 Customers
 - 100+ Books
+- 12 Clothes
 - 30 Carts with items
 - 100 Orders with items
 - 100 Payments
@@ -226,7 +236,11 @@ This will create:
 5. **Access applications**
   - Frontend: http://localhost:3002
    - Admin Dashboard: http://localhost:3001
-   - API Gateway: http://localhost:8000
+  - API Gateway: http://localhost:8100
+
+6. **Try the new clothing flow**
+  - Frontend clothes page: http://localhost:3002/clothes
+  - Clothes API via gateway: http://localhost:8100/api/clothes/clothes/
 
 ## 🛠️ Development
 
@@ -244,6 +258,16 @@ docker-compose exec [service-name] python manage.py migrate
 
 # Create superuser
 docker-compose exec [service-name] python manage.py createsuperuser
+
+### Notes
+
+- This repository may coexist with another local stack already using ports `8000-8004`.
+- The compose file is currently configured to avoid conflicts by exposing:
+  - gateway on `8100`
+  - staff on `8101`
+  - manager on `8102`
+  - customer on `8103`
+  - catalog on `8104`
 ```
 
 ### Frontend Development

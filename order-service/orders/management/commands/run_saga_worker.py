@@ -95,6 +95,7 @@ class Command(BaseCommand):
     def _post_confirm_side_effects(self, payload):
         cart_service_url = payload.get("cart_service_url")
         book_service_url = payload.get("book_service_url")
+        cloth_service_url = payload.get("cloth_service_url")
         customer_id = payload.get("customer_id")
 
         if cart_service_url and customer_id:
@@ -107,13 +108,20 @@ class Command(BaseCommand):
             except requests.RequestException:
                 logger.warning("Failed to clear cart for customer_id=%s", customer_id)
 
-        if book_service_url:
-            for item in payload.get("items", []):
-                try:
-                    requests.post(
-                        f"{book_service_url}/api/books/{item['book_id']}/update_stock/",
-                        json={"quantity": -item["quantity"]},
-                        timeout=5,
-                    )
-                except requests.RequestException:
-                    logger.warning("Failed to update stock for book_id=%s", item.get("book_id"))
+        for item in payload.get("items", []):
+            service_url = book_service_url if item.get("product_type") == "book" else cloth_service_url
+            resource = "books" if item.get("product_type") == "book" else "clothes"
+            if not service_url:
+                continue
+            try:
+                requests.post(
+                    f"{service_url}/api/{resource}/{item['product_id']}/update_stock/",
+                    json={"quantity": -item["quantity"]},
+                    timeout=5,
+                )
+            except requests.RequestException:
+                logger.warning(
+                    "Failed to update stock for %s_id=%s",
+                    item.get("product_type"),
+                    item.get("product_id"),
+                )

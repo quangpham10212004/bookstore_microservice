@@ -38,6 +38,7 @@ echo ""
 echo "=== Phase 2: Seeding dependent data ==="
 
 seed_service "book-service" "seed_books"
+seed_service "cloth-service" "seed_clothes"
 seed_service "cart-service" "seed_carts"
 seed_service "order-service" "seed_orders"
 

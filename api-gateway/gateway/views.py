@@ -15,6 +15,7 @@ SERVICES = {
     "customers": os.environ.get("CUSTOMER_SERVICE_URL", "http://customer-service:8000"),
     "catalogs": os.environ.get("CATALOG_SERVICE_URL", "http://catalog-service:8000"),
     "books": os.environ.get("BOOK_SERVICE_URL", "http://book-service:8000"),
+    "clothes": os.environ.get("CLOTH_SERVICE_URL", "http://cloth-service:8000"),
     "carts": os.environ.get("CART_SERVICE_URL", "http://cart-service:8000"),
     "orders": os.environ.get("ORDER_SERVICE_URL", "http://order-service:8000"),
     "shipments": os.environ.get("SHIP_SERVICE_URL", "http://ship-service:8000"),

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0f1e;
+    font-family: 'Courier New', monospace;
+    color: #7eb8f7;
+    padding: 40px;
+    min-width: 1000px;
+  }
+  .box {
+    border: 2px solid #3a6ea8;
+    border-radius: 4px;
+    padding: 14px 20px;
+    text-align: center;
+  }
+  .title { font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+  .subtitle { font-size: 12px; color: #5a9fd4; }
+  .arrow-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 6px 0;
+    color: #3a6ea8;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  /* Layer 1: Frontend */
+  .layer-frontend {
+    border: 2px solid #3a6ea8;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 0;
+  }
+  .layer-frontend .title { font-size: 14px; margin-bottom: 12px; }
+  .frontend-inner {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  .frontend-inner .box {
+    flex: 1;
+    max-width: 280px;
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  /* Layer 2: Gateway */
+  .layer-gateway {
+    border: 2px solid #3a6ea8;
+    border-radius: 4px;
+    padding: 16px 20px;
+    text-align: center;
+  }
+  .layer-gateway .title { font-size: 14px; margin-bottom: 4px; }
+
+  /* Layer 3: Services */
+  .layer-services {
+    border: 2px solid #3a6ea8;
+    border-radius: 4px;
+    padding: 16px 20px;
+  }
+  .services-grid {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .svc {
+    border: 1px solid #3a6ea8;
+    border-radius: 4px;
+    padding: 8px 10px;
+    text-align: center;
+    min-width: 90px;
+    font-size: 11.5px;
+  }
+  .svc .name { font-weight: bold; margin-bottom: 3px; }
+  .svc .port { color: #5a9fd4; font-size: 11px; }
+
+  /* Layer 4: RabbitMQ + DB */
+  .layer-infra {
+    display: flex;
+    gap: 20px;
+  }
+  .infra-box {
+    flex: 1;
+    border: 2px solid #3a6ea8;
+    border-radius: 4px;
+    padding: 14px 16px;
+  }
+  .infra-box .title { font-size: 13px; margin-bottom: 10px; text-align: center; }
+  .db-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .db-item {
+    border: 1px solid #3a6ea8;
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 10.5px;
+    color: #5a9fd4;
+  }
+  .mq-desc {
+    font-size: 11px;
+    color: #5a9fd4;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .section-label {
+    font-size: 10px;
+    color: #3a6ea8;
+    text-align: right;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  .arrow-row {
+    display: flex;
+    justify-content: space-around;
+    color: #3a6ea8;
+    font-size: 16px;
+    margin: 2px 0;
+    padding: 0 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- LAYER 1: FRONTEND -->
+<div class="section-label">TẦNG GIAO DIỆN</div>
+<div class="layer-frontend">
+  <div class="title">GIAO DIỆN NGƯỜI DÙNG</div>
+  <div class="frontend-inner">
+    <div class="box">
+      <div class="title">Customer Web App</div>
+      <div class="subtitle">React 18 + Vite + TypeScript</div>
+      <div class="subtitle">http://localhost:3000</div>
+    </div>
+    <div class="box">
+      <div class="title">Admin Dashboard</div>
+      <div class="subtitle">Next.js 14 + Shadcn UI</div>
+      <div class="subtitle">http://localhost:3001</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><span>|</span><span>▼</span></div>
+
+<!-- LAYER 2: API GATEWAY -->
+<div class="section-label">TẦNG ĐỊNH TUYẾN</div>
+<div class="layer-gateway">
+  <div class="title">API GATEWAY  (Cổng 8000)</div>
+  <div class="subtitle">Định tuyến · Xác thực JWT · Phân quyền RBAC · Metrics</div>
+  <div class="subtitle" style="margin-top:4px">Django REST Framework · Python 3.11</div>
+</div>
+
+<div class="arrow-down"><span>|</span><span>▼</span></div>
+
+<!-- LAYER 3: MICROSERVICES -->
+<div class="section-label">TẦNG MICROSERVICES</div>
+<div class="layer-services">
+  <div class="services-grid">
+    <div class="svc">
+      <div class="name">Auth Service</div>
+      <div class="port">:8012</div>
+      <div class="port">JWT / Token</div>
+    </div>
+    <div class="svc">
+      <div class="name">Customer</div>
+      <div class="port">:8003</div>
+      <div class="port">Đăng ký / Login</div>
+    </div>
+    <div class="svc">
+      <div class="name">Book</div>
+      <div class="port">:8005</div>
+      <div class="port">Sách / Kho</div>
+    </div>
+    <div class="svc">
+      <div class="name">Catalog</div>
+      <div class="port">:8004</div>
+      <div class="port">Danh mục</div>
+    </div>
+    <div class="svc">
+      <div class="name">Cart</div>
+      <div class="port">:8006</div>
+      <div class="port">Giỏ hàng</div>
+    </div>
+    <div class="svc">
+      <div class="name">Order</div>
+      <div class="port">:8007</div>
+      <div class="port">Đơn hàng</div>
+    </div>
+    <div class="svc">
+      <div class="name">Payment</div>
+      <div class="port">:8009</div>
+      <div class="port">Thanh toán</div>
+    </div>
+    <div class="svc">
+      <div class="name">Shipping</div>
+      <div class="port">:8008</div>
+      <div class="port">Vận chuyển</div>
+    </div>
+    <div class="svc">
+      <div class="name">Comment</div>
+      <div class="port">:8010</div>
+      <div class="port">Đánh giá</div>
+    </div>
+    <div class="svc">
+      <div class="name">Staff</div>
+      <div class="port">:8001</div>
+      <div class="port">Nhân viên</div>
+    </div>
+    <div class="svc">
+      <div class="name">Manager</div>
+      <div class="port">:8002</div>
+      <div class="port">Quản lý</div>
+    </div>
+    <div class="svc">
+      <div class="name">AI Recommender</div>
+      <div class="port">:8011</div>
+      <div class="port">Gợi ý sách</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down"><span>|</span><span>▼</span></div>
+
+<!-- LAYER 4: INFRA -->
+<div class="section-label">TẦNG HẠ TẦNG</div>
+<div class="layer-infra">
+  <div class="infra-box" style="flex:2">
+    <div class="title">PostgreSQL — Cơ sở dữ liệu độc lập mỗi service</div>
+    <div class="db-grid">
+      <div class="db-item">postgres-customer</div>
+      <div class="db-item">postgres-book</div>
+      <div class="db-item">postgres-catalog</div>
+      <div class="db-item">postgres-cart</div>
+      <div class="db-item">postgres-order</div>
+      <div class="db-item">postgres-pay</div>
+      <div class="db-item">postgres-ship</div>
+      <div class="db-item">postgres-comment</div>
+      <div class="db-item">postgres-staff</div>
+      <div class="db-item">postgres-manager</div>
+      <div class="db-item">postgres-recommender</div>
+    </div>
+  </div>
+  <div class="infra-box" style="flex:1">
+    <div class="title">RabbitMQ  :5672</div>
+    <div class="mq-desc">
+      order.saga.start<br>
+      payment.reserve<br>
+      payment.compensate<br>
+      shipping.reserve<br>
+      order.saga.completed<br>
+      order.saga.failed
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
